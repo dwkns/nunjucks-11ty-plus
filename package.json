@@ -27,7 +27,10 @@
         "path": "./syntaxes/nunjucks.tmLanguage.json",
         "embeddedLanguages": {
           "meta.embedded.block.javascript": "javascript",
-          "meta.embedded.block.css": "css"
+          "meta.embedded.block.css": "css",
+          "meta.embedded.block.yaml.frontmatter": "yaml",
+          "meta.embedded.block.json.frontmatter": "json",
+          "meta.embedded.block.js.frontmatter": "javascript"
         }
       }
     ],

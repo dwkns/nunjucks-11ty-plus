@@ -8,8 +8,10 @@ It has some additions that help when you're using [Eleventy (11ty)](http://11ty.
 
 ## Features
 
- - Native comments in `<style>` and `<script>` tags
- - Syntax highlighting in `<style>` and `<script>` tags
+ - Native comments and Syntax highlight in: 
+   - `<style>` tags 
+   - `<script>` tags
+   - `js`, `yaml` and `json` frontmatter.
 
 
 ## To do
