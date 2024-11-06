@@ -1,12 +1,34 @@
-hello "inside"
-
-<script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Results</title>
+  <script>
   let a = "something"
 </script>
-
 <style>
  .class {
   color: blue;
  }
 </style>
+</head>
 
+<body>
+  <script>
+  let a = "something"
+</script>
+<style>
+ .class {
+  color: blue;
+ }
+</style>
+  <h1>{{ test_name }} Results</h1>
+  <ul>
+  {% for student in students %}
+    <li>
+      <em>{{ student.name }}:</em> {{ student.score }}/{{ max_score }}
+    </li>
+  {% endfor %}
+  </ul>
+</body>
+</html>
