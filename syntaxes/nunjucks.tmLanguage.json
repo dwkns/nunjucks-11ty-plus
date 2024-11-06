@@ -1,0 +1,16 @@
+{
+	"name": "nunjucks",
+	"scopeName": "text.html.nunjucks",
+	"patterns": [
+		{
+			"include": "#detectStyleAndScriptTags"
+		}
+	],
+	"repository": {
+		"detectStyleAndScriptTags": {
+			"patterns":[
+				
+			]
+		}
+	}
+}

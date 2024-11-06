@@ -1,0 +1,41 @@
+{
+  "name": "nj-hb-plus",
+  "displayName": "nj-hb-plus",
+  "description": "",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "contributes": {
+    "languages": [
+      {
+        "id": "nunjucks",
+        "aliases": [
+          "nunjucks",
+          "Nunjucks"
+        ],
+        "extensions": [
+          ".njk"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "nunjucks",
+        "scopeName": "text.html.nunjucks",
+        "path": "./syntaxes/nunjucks.tmLanguage.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.javascript": "javascript",
+          "meta.embedded.block.css": "css"
+        }
+      }
+    ],
+    "htmlLanguageParticipants": [
+      {
+        "languageId": "nunjucks",
+        "autoInsert": true
+      }
+    ]
+  }
+}
