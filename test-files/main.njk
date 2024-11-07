@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Results</title>
+<meta charset="utf-8" />
+<title>Results</title>
 </head>
 
 <body>
-  <h1>{{ test_name }} Results</h1>
-  <ul>
-  {% for student in students %}
-    <li>
-      <em>{{ student.name }}:</em> {{ student.score }}/{{ max_score }}
-    </li>
-  {% endfor %}
-  </ul>
+<h1>{{ test_name }} Results</h1>
+<ul>
+{% for student in students %}
+<li><em>{{ student.name }}:</em> {{ student.score }}/{{ max_score }}</li>
+{% endfor %}
+</ul>
 </body>
 </html>
