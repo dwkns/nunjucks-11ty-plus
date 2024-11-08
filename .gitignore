@@ -1,1 +1,2 @@
-*.vslx
+node_modules
+**/*.vsix
