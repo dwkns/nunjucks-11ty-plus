@@ -1,16 +1,213 @@
+---js
+const a = (abc)=>{
+console.log(abc)
+const a = Date().chained
+const b = { a: "someVale", b: true, c:null}
+return abc
+}
+---
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8" />
-<title>Results</title>
+  <meta charset="utf-8" />
+  <title>Results</title>
 </head>
+{{ test_name }}
 
 <body>
-<h1>{{ test_name }} Results</h1>
-<ul>
-{% for student in students %}
-<li><em>{{ student.name }}:</em> {{ student.score }}/{{ max_score }}</li>
-{% endfor %}
-</ul>
+  <h1>{{ test_name }} Results</h1>
+  <ul>
+    {% for student in students %}
+    <li><em>{{ student.name }}:</em> {{ student.score }}/{{ max_score }}</li>
+    {% endfor %}
+  </ul>
+  <div class="{{some value}}">
+    {% macro field(name, value='', type='text') %}
+    <div class="field">
+      <input type="{{ type }}" name="{{ name }}" value="{{ value | escape }}" />
+    </div>
+    {% endmacro %}
+
+    {{ field('user') }}
+    {{ field('pass', type='password') }}
+
+    {% macro field(name, value='', type='text') %}
+    <div class="field">
+      <input type="{{ type }}" name="{{ name }}" value="{{ value | escape }}" />
+    </div>
+    {% endmacro %}
+  </div>
 </body>
+
 </html>
+{# []
+() #}
+
+{{ govukButton({
+  text: "Find address",
+  classes: "govuk-button--secondary"
+}) }}
+
+
+{{ foo.bar }}
+{{ foo["bar"] }}
+
+{{ foo | title }}
+{{ foo | join(",") }}
+{{ foo | replace("foo", "bar") | capitalize }}
+
+
+{% block header %}
+This is the default content
+{% endblock %}
+
+{% block right %}
+{{ super() }}
+Right side!
+{% endblock %}
+
+<section class="left">
+  {% block left %}{% endblock %}
+</section>
+
+<section class="right">
+  {% block right %}
+  This is more content
+  {% endblock %}
+</section>
+
+{% if hungry %}
+I am hungry
+{% elif tired %}
+I am tired
+{% else %}
+I am good!
+{% endif %}
+
+
+{% extends "parent.html" %}
+
+{% block left %}
+This is the left side!
+{% endblock %}
+
+{% block right %}
+This is the right side!
+{% endblock %}
+
+
+{% for ingredient, amount in food %}
+Use {{ amount }} of {{ ingredient }}
+{% endfor %}
+
+{% for fruit, color in fruits %}
+Did you know that {{ fruit }} is {{ color }}?
+{% endfor %}
+
+{% for x, y, z in points %}
+Point: {{ x }}, {{ y }}, {{ z }}
+{% endfor %}
+
+
+<h1>Posts</h1>
+<ul>
+  {% asyncAll item in items %}
+  <li>{{ item.id | lookup }}</li>
+  {% endall %}
+</ul>
+
+
+
+{% macro label(text) %}
+<div>
+  <label>{{ text }}</label>
+</div>
+{% endmacro %}
+
+{% set regExp = r/^foo.*/g %}
+{% if regExp.test('foo') %}
+Foo in the house!
+{% endif %}
+
+{% set cls = cycler("odd", "even") %}
+{% for row in rows %}
+<div class="{{ cls.next() }}">{{ row.name }}</div>
+{% endfor %}
+
+{% set comma = joiner() %}
+{% for tag in tags -%}
+{{ comma() }} {{ tag }}
+{%- endfor %}
+
+{% set items = [1,2,3,4,5,6] %}
+{% set dash = joiner("-") %}
+{% for item in items | batch(2) %}
+{{ dash() }} {% for items in item %}
+{{ items }}
+{% endfor %}
+{% endfor %}
+
+{% set items = {
+'e': 1,
+'d': 2,
+'c': 3,
+'a': 4,
+'f': 5,
+'b': 6
+} %}
+{% for item in items | dictsort %}
+{{ item[0] }}
+{% endfor %}
+
+{% set items = [
+{ name: 'james', type: 'green' },
+{ name: 'john', type: 'blue' },
+{ name: 'jim', type: 'blue' },
+{ name: 'jessie', type: 'green' }
+]
+%}
+
+{% for type, items in items | groupby("type") %}
+<b>{{ type }}</b> :
+{% for item in items %}
+{{ item.name }}
+{% endfor %}<br>
+{% endfor %}
+
+{% set posts = [
+{
+date: {
+year: 2019
+},
+title: 'Post 1'
+},
+{
+date: {
+year: 2018
+},
+title: 'Post 2'
+},
+{
+date: {
+year: 2019
+},
+title: 'Post 3'
+}
+]
+%}
+
+{% for year, posts in posts | groupby("date.year") %}
+:{{ year }}:
+{% for post in posts %}
+{{ post.title }}
+{% endfor %}
+{% endfor %}
+
+{% set numbers=[0, 1, 2, 3, 4, 5] %}
+
+{{ numbers | reject("odd") | join }}
+{{ numbers | reject("even") | join }}
+{{ numbers | reject("divisibleby", 3) | join }}
+{{ numbers | reject() | join }}
