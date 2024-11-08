@@ -17,18 +17,73 @@ It has some additions that help when you're using [Eleventy (11ty)](http://11ty.
 
 
 ## To do
+Syntax highlighting
+- [x] Detect nunjucks tags
+- [x] Detect nunjucks variables
+- [x] Detect HTML areas
+- [ ] Less used tages `{%- -%}` `{{- -}}` etc
+- [ ] quoted strings (single and double)
+- [ ] objects `{ a: {}, b: "", "c": [] }` etc
+- [ ] variable properties `student.score`
+- [ ] Function names `field(name, value='', type='text')`
+- [ ] Function properties `field(name, value='', type='text')`
 
-- [ ] Detect nunjucks tags
-- [ ] Detect nunjucks variables
-- [ ] Detect HTML areas
-- [ ] Proper Formatting
+
+Formatting
+- [ ] Pretier plugin?
+- [ ] Formating JS, JSON and YAML in frontmatter?
+- [ ] Indentation (in laungage config?)
+
+
 
 ## Known Issues
-
-Pretty much nothing works yet so they are legion but specifically:
-
-- If you have JS, YAML or JSON frontmatter and you select all > comment everything in your file, it will comment as if it was the format of your frontmatter. Don't know how to deal with this yet. 
+- [ ] Bug: If you have front matter `Select all > Format` = bad
 
 ## scopes to format
 
-`comment.block.nunjucks` — comments
+copy/pasted from my setting until publication.
+```json
+ {
+        "name": "Frontmatter open/close tags",
+        "scope": "punctuation.definition.tag.begin.frontmatter, punctuation.definition.tag.end.frontmatter",
+        "settings": {
+          "foreground": "#d4ae6e"
+        }
+      },
+      {
+        "name": "Nunjucks variable",
+        "scope": "variable.nunjucks",
+        "settings": {
+          "foreground": "#02a489"
+        }
+      },
+      {
+        "name": "Nunjucks keyword",
+        "scope": "keyword.control.nunjucks",
+        "settings": {
+          "foreground": "#ee6d0b"
+        }
+      },
+      {
+        "name": "Nunjucks open/close tags",
+        "scope": "punctuation.definition.tag.nunjucks",
+        "settings": {
+          "foreground": "#ffde39"
+        }
+      },
+      {
+        "name": "????????????????",
+        "scope": "entity.function.nunjucks",
+        "settings": {
+          "foreground": "#39ff3c"
+        }
+      },
+      {
+        "name": "Nunjucks Comments",
+        "scope": "comment.block.nunjucks",
+        "settings": {
+          "foreground": "#6A9955",
+          "fontStyle": "italic"
+        }
+      },
+  ```
