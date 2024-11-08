@@ -1,7 +1,9 @@
 {
-  "name": "nunjucks-11ty-plus",
-  "displayName": "Nunjucks 11ty Pgalus",
-  "description": "Syntax highlighting for nunjucks files used in 11ty projects",
+	"name": "nunjucks-11ty-plus",
+	"displayName": "Nunjucks 11ty Plus",
+	"description": "Nunjucks for 11ty syntaz highlighting",
+	"publisher": "dwkns",
+	"icon": "images/nunjucks.png",
   "version": "0.0.2",
   
     "repository": {
