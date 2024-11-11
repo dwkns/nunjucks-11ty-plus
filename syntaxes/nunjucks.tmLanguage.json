@@ -40,16 +40,84 @@
 		}
 	],
 	"repository": {
+		"comment": "------Caputures inline & nested tags--------",
+		"inline-and-nested-tags": {
+			"patterns": [
+				{
+					"begin": "(\\{\\{~?\\{*(>|!<)*)\\s*(@?[-a-zA-Z0-9$_\\./]+)*",
+					"end": "(~?\\}\\}\\}*)",
+					"name": "meta.function.inline.other.nunjucks",
+					"beginCaptures": {
+						"1": {
+							"name": "punctuation.definition.tag.nunjucks"
+						},
+						"3": {
+							"name": "variable.parameter.nunjucks"
+						}
+					},
+					"endCaptures": {
+						"1": {
+							"name": "punctuation.definition.tag.nunjucks"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#string"
+						},
+						{
+							"include": "#handlebars_attribute"
+						}
+					]
+				},
+				{
+					"begin": "(\\{\\%~?\\{*(>|!<)*)\\s*(@?[-a-zA-Z0-9$_\\./]+)*",
+					"end": "(~?\\%\\}\\}*)",
+					"name": "meta.function.inline.other.nunjucks",
+					"beginCaptures": {
+						"1": {
+							"name": "punctuation.definition.tag.nunjucks"
+						},
+						"3": {
+							"name": "variable.parameter.nunjucks"
+						}
+					},
+					"endCaptures": {
+						"1": {
+							"name": "punctuation.definition.tag.nunjucks"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#string"
+						},
+						{
+							"include": "#handlebars_attribute"
+						}
+					]
+				}
+			]
+		},
 		"nunjucks-tags": {
 			"patterns": [
 				{
 					"comment": "Captures everyting between {%  %} tags",
 					"name": "meta.tag.nunjucks",
-					"begin": "{%",
-					"end": "%}",
-					"captures": {
-						"0": {
-							"name": "punctuation.definition.tag.nunjucks"
+					"begin": "({%)(-)?",
+					"beginCaptures": {
+						"1": {
+							"name": "punctuation.definition.tag.begin.nunjucks"
+						},
+						"2": {
+							"name": "keyword.other.whitespace.nunjucks"
+						}
+					},
+					"end": "(-)?(%})",
+					"endCaptures": {
+						"1": {
+							"name": "keyword.other.whitespace.nunjucks"
+						},
+						"2": {
+							"name": "punctuation.definition.tag.end.nunjucks"
 						}
 					},
 					"patterns": [
@@ -70,11 +138,22 @@
 				},
 				{
 					"name": "meta.tag.nunjucks",
-					"begin": "{{",
-					"end": "}}",
-					"captures": {
-						"0": {
-							"name": "punctuation.definition.tag.nunjucks"
+					"begin": "({{)(-)?",
+					"beginCaptures": {
+						"1": {
+							"name": "punctuation.definition.tag.begin.nunjucks"
+						},
+						"2": {
+							"name": "keyword.other.whitespace.nunjucks"
+						}
+					},
+					"end": "(-)?(}})",
+					"endCaptures": {
+						"1": {
+							"name": "keyword.other.whitespace.nunjucks"
+						},
+						"2": {
+							"name": "punctuation.definition.tag.end.nunjucks"
 						}
 					},
 					"patterns": [
@@ -84,7 +163,7 @@
 						},
 						{
 							"match": "\\|\\s*(capitalize|default|length|lower|upper|sort|join|replace|trim|reverse|first|last|escape|batch|round|abs|float|int)\\b",
-							"name": "entity.function.js"
+							"name": "entity.function.nunjucks"
 						},
 						{
 							"match": "\\(",
@@ -699,33 +778,6 @@
 		"escaped-double-quote": {
 			"name": "constant.character.escape.js",
 			"match": "\\\\\""
-		},
-		"comment": "------Caputures inline & nested tags--------",
-		"inline-and-nested-tags": {
-			"begin": "(\\{\\{~?\\{*(>|!<)*)\\s*(@?[-a-zA-Z0-9$_\\./]+)*",
-			"end": "(~?\\}\\}\\}*)",
-			"name": "meta.function.inline.other.nunjucks",
-			"beginCaptures": {
-				"1": {
-					"name": "punctuation.definition.tag.nunjucks"
-				},
-				"3": {
-					"name": "variable.parameter.nunjucks"
-				}
-			},
-			"endCaptures": {
-				"1": {
-					"name": "punctuation.definition.tag.nunjucks"
-				}
-			},
-			"patterns": [
-				{
-					"include": "#string"
-				},
-				{
-					"include": "#handlebars_attribute"
-				}
-			]
 		},
 		"handlebars_attribute_name": {
 			"begin": "\\b([-a-zA-Z0-9_\\.]+)\\b=",

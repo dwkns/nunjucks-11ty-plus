@@ -43,9 +43,9 @@ Formatting
 
 copy/pasted from my setting until publication.
 ```json
- {
+      {
         "name": "Frontmatter open/close tags",
-        "scope": "punctuation.definition.tag.begin.frontmatter, punctuation.definition.tag.end.frontmatter",
+        "scope": "punctuation.definition.tag.begin.frontmatter,punctuation.definition.tag.end.frontmatter, keyword.other.whitespace.nunjucks",
         "settings": {
           "foreground": "#d4ae6e"
         }
