@@ -1,43 +1,45 @@
 ---js
-const a = (abc)=>{
-console.log(abc)
-const a = Date().chained
+const a = (abc)=>{ console.log(abc) ; const a = Date().chained
 const b = { a: "someVale", b: true, c:null}
 return abc
 }
 ---
-
-<!DOCTYPE html>
-<html lang="en">
-
 <head>
   <meta charset="utf-8" />
   <title>Results</title>
 </head>
-{{ test_name }}
-
+{# some value #}"
+{#- some value -#}"
+{% for value %}
+{%- for value -%}
+{{ some value }}
+{{- some value -}}
 <body>
   <h1>{{ test_name }} Results</h1>
   <ul>
     {% for student in students %}
-    <li><em>{{ student.name }}:</em> {{ student.score }}/{{ max_score }}</li>
+    <li><em value="some text {%  for a in b %}">{{ student.name }}:</em> {{ student.score }}/{{ max_score }}</li>
     {% endfor %}
   </ul>
-  <div class="{{some value}}">
+  <div class="{{some value}}" id="someID {% function( param1, param2="something" ) %} ">
     {% macro field(name, value='', type='text') %}
     <div class="field">
-      <input type="{{ type }}" name="{{ name }}" value="{{ value | escape }}" />
+      <input type="{{ type }}" name="{{ name }}" />
     </div>
     {% endmacro %}
 
-    {{ field('user') }}
-    {{ field('pass', type='password') }}
+    {{ field('user') }}§
+    {{ field('pass', type="password") }}
 
-    {% macro field(name, value='', type='text') %}
-    <div class="field">
-      <input type="{{ type }}" name="{{ name }}" value="{{ value | escape }}" />
-    </div>
-    {% endmacro %}
+    {{ govukButton({
+      text: "Find address",
+      classes: "govuk-button--secondary"
+    }) }}
+
+    {% for ingredient, amount in food %}
+    Use {{ amount }} of {{ ingredient }}
+    {% endfor %}
+  
   </div>
 </body>
 
@@ -45,10 +47,7 @@ return abc
 {# []
 () #}
 
-{{ govukButton({
-  text: "Find address",
-  classes: "govuk-button--secondary"
-}) }}
+
 
 
 {{ foo.bar }}
