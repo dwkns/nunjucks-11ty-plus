@@ -28,6 +28,8 @@ Syntax highlighting
 - [ ] Function names `field(name, value='', type='text')`
 - [ ] Function properties `field(name, value='', type='text')`
 - [ ] [Review the syntax highlighting in here is it better than ours?')`](https://github.com/edheltzel/better-nunjucks-for-visual-studio-code)
+- [ ] [Improve the langage detection')`](https://code.visualstudio.com/api/language-extensions/language-configuration-guide)
+
 
 
 Formatting

@@ -1,17 +1,18 @@
-<script>
-  let aa = "something"
+<<script>
+let aa = "something"
 </script>
 <style>
-  .class {
-    color: blue;
-  }
+.class {
+color: blue;
+}
 </style>
 <h1>{{ test_name }} Results</h1>
 <ul>
-  {% for student in students %}
-  <li>
-    <em>{{ student.name }}:</em>
-    {{ student.score }}/{{ max_score }}
-  </li>
-  {% endfor %}
+{% for student in students %}
+<li>
+<em>{{ student.name }}:</em>
+{{ student.score }}/{{ max_score }}
+</li>
+{% endfor %}
 </ul>
+</body>

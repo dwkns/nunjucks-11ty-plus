@@ -3,54 +3,82 @@
 	"displayName": "Nunjucks 11ty Plus",
 	"description": "Nunjucks for 11ty syntaz highlighting",
 	"publisher": "dwkns",
+	"author": {
+    "name": "Darrell Wilkins",
+    "email": "dwkns@me.com"
+  },
+  "license": "MIT",
+  "galleryBanner": {
+    "color": "#1e415e",
+    "theme": "dark"
+  },
 	"icon": "images/nunjucks.png",
-  "version": "0.0.2",
-  
-    "repository": {
-      "type": "git",
-      "url": "git+https://github.com/dwkns/nunjucks-11ty-plus"
-    },
-  
-
-  "engines": {
-    "vscode": "^1.95.0"
+	"version": "0.0.2",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/dwkns/nunjucks-11ty-plus"
+	},
+	"bugs": {
+    "url": "https://github.com/dwkns/nunjucks-11ty-plus/issues"
   },
-  "scripts": {
-    "build" : "vsce package"
-  },
-  "contributes": {
-    "languages": [
-      {
-        "id": "nunjucks",
-        "aliases": [
-          "nunjucks",
-          "Nunjucks"
-        ],
-        "extensions": [
-          ".njk"
-        ],
-        "configuration": "./language-configuration.json"
-      }
+	"engines": {
+		"vscode": "^1.95.0"
+	},
+	"scripts": {
+		"build": "vsce package"
+	},
+	"categories": [
+    "Formatters",
+		"Programming Languages",
+    "Snippets"
+  ],
+	"keywords": [
+        "nunjucks",
+        "njk",
+        "syntax",
+        "grammar",
+        "language",
+        "formatter",
+        "11ty",
+				"eleventy"
     ],
-    "grammars": [
-      {
-        "language": "nunjucks",
-        "scopeName": "text.html.nunjucks",
-        "path": "./syntaxes/nunjucks.tmLanguage.json",
-        "embeddedLanguages": {
-          "meta.embedded.block.javascript": "javascript",
-          "meta.embedded.block.css": "css",
-          "meta.embedded.block.yaml.frontmatter": "yaml",
-          "meta.embedded.block.json.frontmatter": "json",
-          "meta.embedded.block.js.frontmatter": "javascript"
-        }
-      }
-    ],
-    "htmlLanguageParticipants": [
-      {
-        "languageId": "nunjucks",
-        "autoInsert": true
-      }
-    ]
-  }
+	"main": "./src/extension.js",
+	"contributes": {
+		"languages": [
+			{
+				"id": "nunjucks",
+				"aliases": [
+					"nunjucks",
+					"Nunjucks"
+				],
+				"extensions": [
+					".njk"
+				],
+				"configuration": "./language-configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "nunjucks",
+				"scopeName": "text.html.nunjucks",
+				"path": "./syntaxes/nunjucks.tmLanguage.json",
+				"embeddedLanguages": {
+					"meta.embedded.block.javascript": "javascript",
+					"meta.embedded.block.css": "css",
+					"meta.embedded.block.yaml.frontmatter": "yaml",
+					"meta.embedded.block.json.frontmatter": "json",
+					"meta.embedded.block.js.frontmatter": "javascript"
+				}
+			}
+		],
+		"htmlLanguageParticipants": [
+			{
+				"languageId": "nunjucks",
+				"autoInsert": true
+			}
+		]
+	},
+	"dependencies": {
+		"prettier": "^3.3.3"
+	}
 }
