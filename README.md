@@ -33,7 +33,8 @@ Syntax highlighting
 
 
 Formatting
-- [ ] Pretier plugin?
+- [x] Basic inbuilt formatting using Prettier
+- [ ] Improve the formatting (use the Jnija parser)?
 - [ ] Formating JS, JSON and YAML in frontmatter?
 - [ ] Indentation (in laungage config?)
 
@@ -41,6 +42,7 @@ Formatting
 
 ## Known Issues
 - [ ] Bug: If you have front matter `Select all > Format` = bad
+- [ ] Bug: Formatting is currently rubbish. But we're in control of it now. 
 
 ## scopes to format
 
