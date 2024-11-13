@@ -27,10 +27,14 @@ Syntax highlighting
 - [ ] variable properties `student.score`
 - [ ] Function names `field(name, value='', type='text')`
 - [ ] Function properties `field(name, value='', type='text')`
+- [ ] [Review the syntax highlighting in here is it better than ours?')`](https://github.com/edheltzel/better-nunjucks-for-visual-studio-code)
+- [ ] [Improve the langage detection')`](https://code.visualstudio.com/api/language-extensions/language-configuration-guide)
+
 
 
 Formatting
-- [ ] Pretier plugin?
+- [x] Basic inbuilt formatting using Prettier
+- [ ] Improve the formatting (use the Jnija parser)?
 - [ ] Formating JS, JSON and YAML in frontmatter?
 - [ ] Indentation (in laungage config?)
 
@@ -38,6 +42,7 @@ Formatting
 
 ## Known Issues
 - [ ] Bug: If you have front matter `Select all > Format` = bad
+- [ ] Bug: Formatting is currently rubbish. But we're in control of it now. 
 
 ## scopes to format
 

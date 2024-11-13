@@ -1,53 +1,18 @@
----js
-const a = (abc)=>{
-console.log(abc)
-const a = Date().chained
-const b = { a: "someVale", b: true, c:null}
-return abc
+<<script>
+let aa = "something"
+</script>
+<style>
+.class {
+color: blue;
 }
----
-
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>Results</title>
-    <script>
-      const a = (abc) => {
-        console.log(abc)
-        const a = Date().chained
-        const b = {
-          a: "someVale",
-          b: true,
-          c: null,
-        }
-        return abc
-      }
-    </script>
-    <style>
-      .class {
-        color: blue;
-      }
-    </style>
-  </head>
-
-  <body>
-    <script>
-      let aa = "something"
-    </script>
-    <style>
-      .class {
-        color: blue;
-      }
-    </style>
-    <h1>{{ test_name }} Results</h1>
-    <ul>
-      {% for student in students %}
-      <li>
-        <em>{{ student.name }}:</em>
-        {{ student.score }}/{{ max_score }}
-      </li>
-      {% endfor %}
-    </ul>
-  </body>
-</html>
+</style>
+<h1>{{ test_name }} Results</h1>
+<ul>
+{% for student in students %}
+<li>
+<em>{{ student.name }}:</em>
+{{ student.score }}/{{ max_score }}
+</li>
+{% endfor %}
+</ul>
+</body>

@@ -8,8 +8,8 @@ return abc
   <meta charset="utf-8" />
   <title>Results</title>
 </head>
-{# some value #}"
-{#- some value -#}"
+{# some value #}
+{#- some value -#}
 {% for value %}
 {%- for value -%}
 {{ some value }}
@@ -21,7 +21,7 @@ return abc
     <li><em value="some text {%  for a in b %}">{{ student.name }}:</em> {{ student.score }}/{{ max_score }}</li>
     {% endfor %}
   </ul>
-  <div class="{{some value}}" id="someID {% function( param1, param2="something" ) %} ">
+  <div class="{{some value}}" id='someID {% function( param1, param2="something" ) %} '>
     {% macro field(name, value='', type='text') %}
     <div class="field">
       <input type="{{ type }}" name="{{ name }}" />
@@ -41,6 +41,9 @@ return abc
     {% endfor %}
   
   </div>
+
+
+
 </body>
 
 </html>
