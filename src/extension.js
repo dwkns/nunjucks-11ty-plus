@@ -1,21 +1,19 @@
 const vscode = require("vscode");
 const prettier = require("prettier");
-const util = require("node:util");
-const path = require("path");
 
-const prettierErrorCollection = vscode.languages.createDiagnosticCollection("prettierErrorCollection");
+
+// Configure a collection to hold Prettier Error feedback.
+// Collections are used to feed information back to the VSCode UI
+const prettierErrorCollection = vscode.languages.createDiagnosticCollection(
+  "prettierErrorCollection",
+);
 
 function updateDiagnostics(document, prettierErrorCollection, usefulError) {
- 
   if (document) {
-
-    const errorRange =  new vscode.Range(
+    const errorRange = new vscode.Range(
       new vscode.Position(usefulError.startLine, usefulError.startColumn),
       new vscode.Position(usefulError.endLine, usefulError.endColumn),
-    )
-
-
-    console.log("writing diagnostics: ",errorRange)
+    );
     prettierErrorCollection.set(document.uri, [
       {
         code: "",
@@ -23,40 +21,43 @@ function updateDiagnostics(document, prettierErrorCollection, usefulError) {
         range: errorRange,
         severity: vscode.DiagnosticSeverity.Error,
         source: "",
-        // relatedInformation: [
+        // relatedInformation: [  // Can provide addtional feedback if required.
         //   new vscode.DiagnosticRelatedInformation(
         //     new vscode.Location(
         //       document.uri,
         //       errorRange
         //     ),
-        //     "first assignment to `x`",
+        //     "Related information Error Message",
         //   ),
         // ],
       },
     ]);
   } else {
-    console.log("clearing diagnostics in updateDiagnostics ")
-    prettierErrorCollection.clear();
+    prettierErrorCollection.clear(); // clears the error messages.
   }
-
-
 }
 
-const createHoverProvider = async (context) => {
+// Example Hover Provider for later use
+const registerHoverProvider = async (context) => {
   return vscode.languages.registerHoverProvider("nunjucks", {
     provideHover(document, position, token) {
       let formattedDocument = JSON.stringify(document, undefined, 2);
       let formattedPosition = JSON.stringify(position, undefined, 2);
       let formattedToken = JSON.stringify(token, undefined, 2);
-      return {
-        contents: [
-          `Hover at position ${formattedPosition} with token:  ${formattedToken}  `,
-        ],
-      };
+      return hover(formattedPosition, formattedToken);
     },
   });
 };
 
+const hover = async (formattedPosition, formattedToken) => {
+  return {
+    contents: [
+      `Hover at position ${formattedPosition} with token:  ${formattedToken}  `,
+    ],
+  };
+};
+
+// Do the formatting
 async function format(document, range, options) {
   const result = [];
   const content = document.getText(range);
@@ -65,10 +66,13 @@ async function format(document, range, options) {
   const indentsize = editor.tabSize || workspace.tabSize;
 
   try {
+    // pass off the document to the prettier HTML parser
+    // We should probably use the njinja one instead (with some modifications)
     const fmtopts = { semi: false, parser: "html" };
     const newText = await prettier.format(content, fmtopts);
     result.push(vscode.TextEdit.replace(range, newText));
   } catch (error) {
+    // If prettier fails for some reason, deconstcut the error
     const usefulError = {
       startLine: error.loc.start.line,
       startColumn: error.loc.start.column,
@@ -77,17 +81,10 @@ async function format(document, range, options) {
       msg: error.cause.msg,
     };
 
-    console.log(
-      "usefulError: ",
-      util.inspect(usefulError, {
-        showHidden: false,
-        depth: 0,
-        colorize: true,
-      }),
-    );
+    // Call for an update to the inline diagnostics with our error.
+    updateDiagnostics(document, prettierErrorCollection, usefulError);
 
-    updateDiagnostics(document, prettierErrorCollection,usefulError );
-
+    // Use a standard VSCode info message too.
     vscode.window.showInformationMessage(error.message);
   }
 
@@ -95,28 +92,21 @@ async function format(document, range, options) {
 }
 
 function activate(context) {
-  // boilerplate to register the extension.
+  // called when the extension  activates.
 
-  console.log("activating with context: ", context);
-
-  // context.subscriptions.push(
-  //   vscode.window.onDidChange(function (event) {
-  //     console.log("Event happened: " + event);
-  //   }),
-  // );
-
+  // watch for editing changes & clear the formatter error messages when we detect one.
   context.subscriptions.push(
     vscode.workspace.onDidChangeTextDocument(
       (event) => {
-        // clears the 
-        prettierErrorCollection.clear();
+        // do we need more checking the type of event?
+        prettierErrorCollection.clear(); // actually do the clear
       },
       null,
       context.subscriptions,
     ),
   );
 
-  context.subscriptions.push(
+  const registerFormatter = (context) => {
     vscode.languages.registerDocumentFormattingEditProvider("nunjucks", {
       provideDocumentFormattingEdits(document, options) {
         const start = new vscode.Position(0, 0);
@@ -125,13 +115,16 @@ function activate(context) {
           document.lineAt(document.lineCount - 1).text.length,
         );
         const range = new vscode.Range(start, end);
-        console.log("about to run format(): ");
         return format(document, range, options);
       },
-    }),
-  );
+    });
+  };
 
-  // context.subscriptions.push(createHoverProvider(context));
+  // register our formatter
+  context.subscriptions.push(registerFormatter(context));
+
+  // register our hover provider
+  context.subscriptions.push(registerHoverProvider(context));
 }
 
 // This method is called when your extension is deactivated
