@@ -27,6 +27,7 @@ Syntax highlighting
 - [ ] variable properties `student.score`
 - [ ] Function names `field(name, value='', type='text')`
 - [ ] Function properties `field(name, value='', type='text')`
+- [ ] [Review the syntax highlighting in here is it better than ours?')`](https://github.com/edheltzel/better-nunjucks-for-visual-studio-code)
 
 
 Formatting
