@@ -1,133 +1,239 @@
 const vscode = require("vscode");
-const prettier = require("prettier");
+const path = require("path");
+const fs = require("fs");
+const { createContext } = require("@dprint/formatter");
+const typescriptPlugin = require("@dprint/typescript");
+const jsonPlugin = require("@dprint/json");
+const markdownPlugin = require("@dprint/markdown");
+const { formatContentAsync, formatStyleBlocksAsync } = require('./formatter');
+const prettier = require('prettier');
+
+const outputChannel = vscode.window.createOutputChannel('Nunjucks 11ty Plus');
+let dprintContext = null;
+
+// Initialize dprint formatter context
+async function initializeDprintContext() {
+  if (dprintContext) return dprintContext;
+  
+  try {
+    const context = createContext({ indentWidth: 2 });
+    
+    // Add available plugins
+    context.addPlugin(fs.readFileSync(typescriptPlugin.getPath()), {});
+    context.addPlugin(fs.readFileSync(jsonPlugin.getPath()), {});
+    context.addPlugin(fs.readFileSync(markdownPlugin.getPath()), {});
+    
+    // Add markup plugin for HTML/Nunjucks/Vue/Svelte etc.
+    // Load directly from node_modules since dprint-plugin-markup is just a WASM container
+    const markupPluginPath = path.join(__dirname, '..', 'node_modules', 'dprint-plugin-markup', 'plugin.wasm');
+    if (fs.existsSync(markupPluginPath)) {
+      context.addPlugin(fs.readFileSync(markupPluginPath), {});
+      appendLog('Markup plugin loaded', 'debug');
+    } else {
+      appendLog('Markup plugin not found at ' + markupPluginPath, 'warn');
+    }
+    
+    dprintContext = context;
+    appendLog('Dprint context initialized', 'success');
+    return context;
+  } catch (err) {
+    appendLog('Failed to initialize dprint: ' + (err && err.message), 'error');
+    throw err;
+  }
+}
+
+function appendLog(message, level = 'info') {
+  try {
+    const timestamp = new Date().toISOString();
+    let prefix = '';
+
+    switch (level) {
+      case 'error':
+        prefix = '[ERROR]';
+        break;
+      case 'warn':
+        prefix = '[WARN]';
+        break;
+      case 'success':
+        prefix = '[✓]';
+        break;
+      case 'debug':
+        prefix = '[DEBUG]';
+        break;
+      case 'info':
+      default:
+        prefix = '[INFO]';
+        break;
+    }
+
+    const logEntry = `${timestamp} ${prefix} ${message}`;
+    outputChannel.appendLine(logEntry);
+  } catch (e) {
+    // ignore logging errors
+  }
+}
 
 
-// Configure a collection to hold Prettier Error feedback.
-// Collections are used to feed information back to the VSCode UI
-const prettierErrorCollection = vscode.languages.createDiagnosticCollection(
-  "prettierErrorCollection",
-);
+const formatterErrorCollection = vscode.languages.createDiagnosticCollection('formatterErrorCollection');
 
-function updateDiagnostics(document, prettierErrorCollection, usefulError) {
+function updateDiagnostics(document, formatterErrorCollection, usefulError) {
   if (document) {
     const errorRange = new vscode.Range(
       new vscode.Position(usefulError.startLine, usefulError.startColumn),
       new vscode.Position(usefulError.endLine, usefulError.endColumn),
     );
-    prettierErrorCollection.set(document.uri, [
+    formatterErrorCollection.set(document.uri, [
       {
         code: "",
         message: usefulError.msg,
         range: errorRange,
         severity: vscode.DiagnosticSeverity.Error,
-        source: "",
-        // relatedInformation: [  // Can provide addtional feedback if required.
-        //   new vscode.DiagnosticRelatedInformation(
-        //     new vscode.Location(
-        //       document.uri,
-        //       errorRange
-        //     ),
-        //     "Related information Error Message",
-        //   ),
-        // ],
+        source: "Nunjucks 11ty Plus",
       },
     ]);
   } else {
-    prettierErrorCollection.clear(); // clears the error messages.
+    formatterErrorCollection.clear();
+  }
+} 
+
+async function formatWithDprint(content, filePath) {
+  try {
+    const context = await initializeDprintContext();
+    const formatted = context.formatText({
+      filePath: filePath,
+      fileText: content,
+    });
+    appendLog('Format succeeded (' + (formatted && formatted.length) + ' bytes)', 'debug');
+    return formatted;
+  } catch (err) {
+    appendLog('Format error: ' + (err && (err.message || String(err))), 'error');
+    throw err;
   }
 }
 
-// Example Hover Provider for later use
-const registerHoverProvider = async (context) => {
-  return vscode.languages.registerHoverProvider("nunjucks", {
-    provideHover(document, position, token) {
-      let formattedDocument = JSON.stringify(document, undefined, 2);
-      let formattedPosition = JSON.stringify(position, undefined, 2);
-      let formattedToken = JSON.stringify(token, undefined, 2);
-      return hover(formattedPosition, formattedToken);
-    },
-  });
-};
 
-const hover = async (formattedPosition, formattedToken) => {
-  return {
-    contents: [
-      `Hover at position ${formattedPosition} with token:  ${formattedToken}  `,
-    ],
-  };
-};
-
-// Do the formatting
 async function format(document, range, options) {
   const result = [];
   const content = document.getText(range);
-  const editor = vscode.window.activeTextEditor.options;
-  const workspace = vscode.workspace.getConfiguration("editor");
-  const indentsize = editor.tabSize || workspace.tabSize;
 
   try {
-    // pass off the document to the prettier HTML parser
-    // We should probably use the njinja one instead (with some modifications)
-    const fmtopts = { semi: false, parser: "html" };
-    const newText = await prettier.format(content, fmtopts);
-    result.push(vscode.TextEdit.replace(range, newText));
-  } catch (error) {
-    // If prettier fails for some reason, deconstcut the error
-    const usefulError = {
-      startLine: error.loc.start.line,
-      startColumn: error.loc.start.column,
-      endLine: error.loc.end.line,
-      endColumn: error.loc.end.column,
-      msg: error.cause.msg,
+    const runFn = async (content, stdinPath) => {
+      if (stdinPath.endsWith('.yaml') || stdinPath.endsWith('.yml')) {
+        try {
+          return await prettier.format(content, { parser: 'yaml', printWidth: 100 });
+        } catch {
+          return content;
+        }
+      }
+      return formatWithDprint(content, stdinPath);
     };
-
-    // Call for an update to the inline diagnostics with our error.
-    updateDiagnostics(document, prettierErrorCollection, usefulError);
-
-    // Use a standard VSCode info message too.
-    vscode.window.showInformationMessage(error.message);
+    const formatted = await formatContentAsync(content, document.fileName || 'file.njk', runFn);
+    const withCss = await formatStyleBlocksAsync(formatted, (css) =>
+      prettier.format(css, { parser: 'css', printWidth: 100 })
+    );
+    formatterErrorCollection.delete(document.uri);
+    result.push(vscode.TextEdit.replace(range, withCss));
+  } catch (error) {
+    const message = (error && (error.message || String(error))) || 'Unknown formatting error';
+    const usefulError = {
+      startLine: 0,
+      startColumn: 0,
+      endLine: Math.max(0, document.lineCount - 1),
+      endColumn: document.lineAt(document.lineCount - 1).text.length,
+      msg: message,
+    };
+    updateDiagnostics(document, formatterErrorCollection, usefulError);
+    vscode.window.showErrorMessage('Formatting failed: ' + message);
   }
 
   return result;
-}
+} 
 
 function activate(context) {
-  // called when the extension  activates.
-
-  // watch for editing changes & clear the formatter error messages when we detect one.
+  context.subscriptions.push(formatterErrorCollection);
   context.subscriptions.push(
-    vscode.workspace.onDidChangeTextDocument(
-      (event) => {
-        // do we need more checking the type of event?
-        prettierErrorCollection.clear(); // actually do the clear
-      },
-      null,
-      context.subscriptions,
-    ),
+    vscode.workspace.onDidChangeTextDocument((event) => {
+      if (event.document) {
+        formatterErrorCollection.delete(event.document.uri);
+      }
+    }),
   );
 
-  const registerFormatter = (context) => {
-    vscode.languages.registerDocumentFormattingEditProvider("nunjucks", {
-      provideDocumentFormattingEdits(document, options) {
-        const start = new vscode.Position(0, 0);
-        const end = new vscode.Position(
-          document.lineCount - 1,
-          document.lineAt(document.lineCount - 1).text.length,
-        );
-        const range = new vscode.Range(start, end);
-        return format(document, range, options);
-      },
-    });
+  const formatter = {
+    provideDocumentFormattingEdits(document, options) {
+      const start = new vscode.Position(0, 0);
+      const end = new vscode.Position(
+        document.lineCount - 1,
+        document.lineAt(document.lineCount - 1).text.length,
+      );
+      const range = new vscode.Range(start, end);
+      return format(document, range, options);
+    },
+    provideDocumentRangeFormattingEdits(document, range, options) {
+      return format(document, range, options);
+    },
   };
 
-  // register our formatter
-  context.subscriptions.push(registerFormatter(context));
+  context.subscriptions.push(
+    vscode.languages.registerDocumentFormattingEditProvider("nunjucks", formatter),
+    vscode.languages.registerDocumentRangeFormattingEditProvider("nunjucks", formatter),
+  );
 
-  // register our hover provider
-  context.subscriptions.push(registerHoverProvider(context));
+  context.subscriptions.push(
+    vscode.commands.registerCommand('nunjucks.showFormatterInfo', async () => {
+      outputChannel.show(true);
+      appendLog('--- Formatter Info ---');
+      appendLog('Using @dprint/formatter WASM API (no CLI binary needed)');
+      appendLog('Available formatters: HTML/Nunjucks (markup_fmt), TypeScript, JavaScript, JSON, Markdown');
+      
+      try {
+        const context = await initializeDprintContext();
+        appendLog('Dprint context initialized successfully with all plugins');
+      } catch (err) {
+        appendLog('Error initializing dprint context: ' + (err && err.message));
+      }
+
+      appendLog('Tip: Markup formatting supports HTML, Vue, Svelte, Astro, Angular, Jinja, Twig, Nunjucks, Vento, Mustache, and XML files.');
+    }),
+  );
+
+  // Associate .html files with Nunjucks if the user opted in
+  applyHtmlAssociation();
+  context.subscriptions.push(
+    vscode.workspace.onDidChangeConfiguration((e) => {
+      if (e.affectsConfiguration('nunjucks.associateHtml')) {
+        applyHtmlAssociation();
+      }
+    }),
+  );
+
+  appendLog('Nunjucks 11ty Plus activated', 'info');
+  initializeDprintContext().catch((err) => {
+    appendLog('Error initializing dprint context at activation: ' + (err && err.message), 'error');
+  });
 }
 
-// This method is called when your extension is deactivated
+function applyHtmlAssociation() {
+  const config = vscode.workspace.getConfiguration('nunjucks');
+  const associate = config.get('associateHtml', false);
+  const filesConfig = vscode.workspace.getConfiguration('files');
+  const associations = filesConfig.get('associations', {});
+
+  if (associate) {
+    if (associations['*.html'] !== 'nunjucks') {
+      associations['*.html'] = 'nunjucks';
+      filesConfig.update('associations', associations, vscode.ConfigurationTarget.Workspace);
+      appendLog('Associated .html files with Nunjucks', 'info');
+    }
+  } else {
+    if (associations['*.html'] === 'nunjucks') {
+      delete associations['*.html'];
+      filesConfig.update('associations', associations, vscode.ConfigurationTarget.Workspace);
+      appendLog('Removed .html → Nunjucks association', 'info');
+    }
+  }
+}
+
 function deactivate() {}
 
 module.exports = {

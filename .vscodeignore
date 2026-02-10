@@ -1,4 +1,12 @@
 .vscode/**
 .vscode-test/**
 .gitignore
+.prettierrc
 vsc-extension-quickstart.md
+test-files/**
+test/**
+temp/**
+coppied from install/**
+test-grammar-quick.js
+CHANGELOG.md
+SYNTAX-SCOPES.md

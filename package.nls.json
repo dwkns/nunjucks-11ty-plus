@@ -1,4 +1,4 @@
 {
-	"displayName": "Nunjucks Language Basics",
-	"description": "Provides syntax highlighting and bracket matching in Nunjucks files."
+	"displayName": "Nunjucks 11ty Plus",
+	"description": "Nunjucks syntax highlighting and formatting for 11ty (Eleventy). Supports frontmatter (YAML, JSON, JS), script/style blocks, and HTML."
 }

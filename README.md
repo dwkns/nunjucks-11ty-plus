@@ -1,94 +1,88 @@
-# nunjucks-11ty-plus
+# Nunjucks 11ty Plus
 
-nunjucks-11ty-plus is a syntax highlighter for nunjucks files. 
+A [VS Code](https://code.visualstudio.com/) extension that adds **syntax highlighting**, **formatting**, and a **colour theme** for [Nunjucks](https://mozilla.github.io/nunjucks/) templates (`.njk`), with first-class support for [Eleventy (11ty)](https://www.11ty.dev) projects.
 
-Formatting can be done with [Nunjucks-prettier](https://marketplace.visualstudio.com/items?itemName=guapibai.nunjucks-prettier) however it will only really format the HTML in your file. The nunjucks code gets mangled. 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/dwkns/nunjucks-11ty-plus/blob/HEAD/LICENSE.txt)
 
-It has some additions that help when you're using [Eleventy (11ty)](http://11ty.dev/) as your website build tool.
-
-> Warning: This extension is incomplete and there is much work to do. 
+---
 
 ## Features
 
- - Native comments and Syntax highlight in: 
-   - `<style>` tags 
-   - `<script>` tags
-   - `js`, `yaml` and `json` frontmatter.
+| Feature | Description |
+|---------|-------------|
+| **Syntax highlighting** | Nunjucks tags, variables, filters, and embedded HTML in `.njk` files |
+| **Embedded languages** | JavaScript and CSS in `<script>` / `<style>`; YAML, JSON, and JS in frontmatter (`---`, `---json`, `---js`) |
+| **Format Document** | Format the whole file (`Shift+Alt+F` / `Shift+Option+F`) |
+| **Format Selection** | Format only the selected range via the Command Palette or context menu |
+| **Bundled formatters** | Uses bundled [dprint](https://dprint.dev/) WASM and [Prettier](https://prettier.io/) — no CLI or local install required |
+| **Nunjucks Dark Modern** | Dark theme based on VS Code Dark Modern with dedicated colours for all Nunjucks scopes |
 
+### What gets formatted
 
-## To do
-Syntax highlighting
-- [x] Detect nunjucks tags
-- [x] Detect nunjucks variables
-- [x] Detect HTML areas
-- [ ] Less used tages `{%- -%}` `{{- -}}` etc
-- [ ] quoted strings (single and double)
-- [ ] objects `{ a: {}, b: "", "c": [] }` etc
-- [ ] variable properties `student.score`
-- [ ] Function names `field(name, value='', type='text')`
-- [ ] Function properties `field(name, value='', type='text')`
-- [ ] [Review the syntax highlighting in here is it better than ours?')`](https://github.com/edheltzel/better-nunjucks-for-visual-studio-code)
-- [ ] [Improve the langage detection')`](https://code.visualstudio.com/api/language-extensions/language-configuration-guide)
+- **HTML / Nunjucks** — dprint markup plugin
+- **JavaScript** in `<script>` and `---js` frontmatter — dprint
+- **JSON** in `---json` frontmatter — dprint
+- **YAML** in `---` frontmatter — Prettier
+- **CSS** in `<style>` blocks — Prettier
 
+---
 
+## Installation
 
-Formatting
-- [x] Basic inbuilt formatting using Prettier
-- [ ] Improve the formatting (use the Jnija parser)?
-- [ ] Formating JS, JSON and YAML in frontmatter?
-- [ ] Indentation (in laungage config?)
+Install from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=dwkns.nunjucks-11ty-plus) or from the command line:
 
+```bash
+code --install-extension dwkns.nunjucks-11ty-plus
+```
 
+---
 
-## Known Issues
-- [ ] Bug: If you have front matter `Select all > Format` = bad
-- [ ] Bug: Formatting is currently rubbish. But we're in control of it now. 
+## Usage
 
-## scopes to format
+1. Open a `.njk` file — VS Code will use the Nunjucks language mode.
+2. **Format Document:** `Shift+Alt+F` (Windows/Linux) or `Shift+Option+F` (macOS).
+3. **Format Selection:** Select text, right-click, then **Format Selection**, or use the Command Palette.
+4. **Colour theme:** **File → Preferences → Color Theme** → select **Nunjucks Dark Modern**.
+5. **Formatter status:** Command Palette → **Nunjucks: Show Formatter Info** to check that formatters loaded correctly.
 
-copy/pasted from my setting until publication.
-```json
-      {
-        "name": "Frontmatter open/close tags",
-        "scope": "punctuation.definition.tag.begin.frontmatter,punctuation.definition.tag.end.frontmatter, keyword.other.whitespace.nunjucks",
-        "settings": {
-          "foreground": "#d4ae6e"
-        }
-      },
-      {
-        "name": "Nunjucks variable",
-        "scope": "variable.nunjucks",
-        "settings": {
-          "foreground": "#02a489"
-        }
-      },
-      {
-        "name": "Nunjucks keyword",
-        "scope": "keyword.control.nunjucks",
-        "settings": {
-          "foreground": "#ee6d0b"
-        }
-      },
-      {
-        "name": "Nunjucks open/close tags",
-        "scope": "punctuation.definition.tag.nunjucks",
-        "settings": {
-          "foreground": "#ffde39"
-        }
-      },
-      {
-        "name": "????????????????",
-        "scope": "entity.function.nunjucks",
-        "settings": {
-          "foreground": "#39ff3c"
-        }
-      },
-      {
-        "name": "Nunjucks Comments",
-        "scope": "comment.block.nunjucks",
-        "settings": {
-          "foreground": "#6A9955",
-          "fontStyle": "italic"
-        }
-      },
-  ```
+---
+
+## Configuration
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `nunjucks.associateHtml` | `false` | Treat `.html` files as Nunjucks. When enabled, `.html` files open with Nunjucks syntax highlighting and formatting. |
+
+---
+
+## Customising syntax colours
+
+The extension assigns TextMate scope names (e.g. `keyword.control.nunjucks`, `variable.nunjucks`, `entity.name.function.filter.nunjucks`) to Nunjucks tokens. You can override these in your `settings.json` via `editor.tokenColorCustomizations`.
+
+See [SYNTAX-SCOPES.md](https://github.com/dwkns/nunjucks-11ty-plus/blob/HEAD/SYNTAX-SCOPES.md) for a complete table of scopes, their colours in the bundled theme, and copy-paste JSON for `settings.json`.
+
+---
+
+## Requirements
+
+- **VS Code** `^1.95.0`
+- No extra tools or runtimes — formatters are bundled.
+
+---
+
+## Troubleshooting
+
+- **Formatting fails** — Run **Nunjucks: Show Formatter Info** from the Command Palette. The output channel shows whether dprint plugins loaded. If developing from source, run `npm install` so `node_modules` are present.
+- **Syntax or formatting looks wrong** — File an [issue](https://github.com/dwkns/nunjucks-11ty-plus/issues) with a small example and your VS Code version.
+
+---
+
+## Contributing
+
+Bug reports and feature requests are welcome on [GitHub Issues](https://github.com/dwkns/nunjucks-11ty-plus/issues). Pull requests appreciated — please run `npm test` before submitting.
+
+---
+
+## License
+
+[MIT](https://github.com/dwkns/nunjucks-11ty-plus/blob/HEAD/LICENSE.txt)

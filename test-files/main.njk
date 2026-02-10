@@ -1,215 +1,247 @@
----js
-const a = (abc)=>{ console.log(abc) ; const a = Date().chained
-const b = { a: "someVale", b: true, c:null}
-return abc
-}
 ---
-<head>
-  <meta charset="utf-8" />
-  <title>Results</title>
-</head>
-{# some value #}
-{#- some value -#}
-{% for value %}
-{%- for value -%}
-{{ some value }}
-{{- some value -}}
-<body>
-  <h1>{{ test_name }} Results</h1>
-  <ul>
-    {% for student in students %}
-    <li><em value="some text {%  for a in b %}">{{ student.name }}:</em> {{ student.score }}/{{ max_score }}</li>
-    {% endfor %}
-  </ul>
-  <div class="{{some value}}" id='someID {% function( param1, param2="something" ) %} '>
-    {% macro field(name, value='', type='text') %}
-    <div class="field">
-      <input type="{{ type }}" name="{{ name }}" />
-    </div>
-    {% endmacro %}
+title: My Eleventy Site
+layout: base.njk
+tags:
+  - blog
+  - featured
+permalink: /posts/{{ title | slugify }}/
+---
 
-    {{ field('user') }}§
-    {{ field('pass', type="password") }}
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>{{ title }} | {{ site.name }}</title>
+    <link rel="stylesheet" href="/css/style.css" />
 
-    {{ govukButton({
-      text: "Find address",
-      classes: "govuk-button--secondary"
-    }) }}
-
-    {% for ingredient, amount in food %}
-    Use {{ amount }} of {{ ingredient }}
-    {% endfor %}
-  
-  </div>
-
-
-
-</body>
-
-</html>
-{# []
-() #}
-
-
-
-
-{{ foo.bar }}
-{{ foo["bar"] }}
-
-{{ foo | title }}
-{{ foo | join(",") }}
-{{ foo | replace("foo", "bar") | capitalize }}
-
-
-{% block header %}
-This is the default content
-{% endblock %}
-
-{% block right %}
-{{ super() }}
-Right side!
-{% endblock %}
-
-<section class="left">
-  {% block left %}{% endblock %}
-</section>
-
-<section class="right">
-  {% block right %}
-  This is more content
-  {% endblock %}
-</section>
-
-{% if hungry %}
-I am hungry
-{% elif tired %}
-I am tired
-{% else %}
-I am good!
-{% endif %}
-
-
-{% extends "parent.html" %}
-
-{% block left %}
-This is the left side!
-{% endblock %}
-
-{% block right %}
-This is the right side!
-{% endblock %}
-
-
-{% for ingredient, amount in food %}
-Use {{ amount }} of {{ ingredient }}
-{% endfor %}
-
-{% for fruit, color in fruits %}
-Did you know that {{ fruit }} is {{ color }}?
-{% endfor %}
-
-{% for x, y, z in points %}
-Point: {{ x }}, {{ y }}, {{ z }}
-{% endfor %}
-
-
-<h1>Posts</h1>
-<ul>
-  {% asyncAll item in items %}
-  <li>{{ item.id | lookup }}</li>
-  {% endall %}
-</ul>
-
-
-
-{% macro label(text) %}
-<div>
-  <label>{{ text }}</label>
-</div>
-{% endmacro %}
-
-{% set regExp = r/^foo.*/g %}
-{% if regExp.test('foo') %}
-Foo in the house!
-{% endif %}
-
-{% set cls = cycler("odd", "even") %}
-{% for row in rows %}
-<div class="{{ cls.next() }}">{{ row.name }}</div>
-{% endfor %}
-
-{% set comma = joiner() %}
-{% for tag in tags -%}
-{{ comma() }} {{ tag }}
-{%- endfor %}
-
-{% set items = [1,2,3,4,5,6] %}
-{% set dash = joiner("-") %}
-{% for item in items | batch(2) %}
-{{ dash() }} {% for items in item %}
-{{ items }}
-{% endfor %}
-{% endfor %}
-
-{% set items = {
-'e': 1,
-'d': 2,
-'c': 3,
-'a': 4,
-'f': 5,
-'b': 6
-} %}
-{% for item in items | dictsort %}
-{{ item[0] }}
-{% endfor %}
-
-{% set items = [
-{ name: 'james', type: 'green' },
-{ name: 'john', type: 'blue' },
-{ name: 'jim', type: 'blue' },
-{ name: 'jessie', type: 'green' }
-]
-%}
-
-{% for type, items in items | groupby("type") %}
-<b>{{ type }}</b> :
-{% for item in items %}
-{{ item.name }}
-{% endfor %}<br>
-{% endfor %}
-
-{% set posts = [
-{
-date: {
-year: 2019
-},
-title: 'Post 1'
-},
-{
-date: {
-year: 2018
-},
-title: 'Post 2'
-},
-{
-date: {
-year: 2019
-},
-title: 'Post 3'
+    <style>
+:root {
+  --primary: #0078d4;
+  --bg: #1f1f1f;
 }
-]
-%}
+body {
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: #ccc;
+  margin: 0;
+  padding: 2rem;
+}
+.card {
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+.highlight {
+  color: var(--primary);
+  font-weight: bold;
+}
 
-{% for year, posts in posts | groupby("date.year") %}
-:{{ year }}:
-{% for post in posts %}
-{{ post.title }}
-{% endfor %}
-{% endfor %}
+</style>
+  </head>
 
-{% set numbers=[0, 1, 2, 3, 4, 5] %}
+  <body>
+    {# ============================================
+Navigation - demonstrates comments, blocks,
+includes, and extends
+============================================ #}
 
-{{ numbers | reject("odd") | join }}
-{{ numbers | reject("even") | join }}
-{{ numbers | reject("divisibleby", 3) | join }}
-{{ numbers | reject() | join }}
+    {% block header %}
+      <header>
+        <nav>
+          <a href="/">{{ site.name }}</a>
+          {% for item in navigation %}
+            <a
+              href="{{ item.url }}"
+              class="{% if item.url == page.url %}active{% endif %}"
+            >
+              {{ item.title }}
+            </a>
+          {% endfor %}
+        </nav>
+      </header>
+    {% endblock %}
+
+    {# Main content area #}
+    <main>
+      <h1>{{ title }}</h1>
+
+      {# --- Macros --- #}
+      {% macro field(name, value='', type='text', required=false) %}
+        <div class="field">
+          <label for="{{ name }}">{{ name | capitalize }}</label>
+          <input
+            type="{{ type }}"
+            id="{{ name }}"
+            name="{{ name }}"
+            value="{{ value }}"
+            {% if required %}
+              required
+            {% endif %}
+          />
+        </div>
+      {% endmacro %}
+
+      {% macro card(heading, body, level=2) %}
+        <div class="card">
+          <h{{ level }}>{{ heading }}</h{{ level }}>
+          <p>{{ body | truncate(120) }}</p>
+        </div>
+      {% endmacro %}
+
+      {# --- Using macros --- #}
+      <form>
+        {{ field('username', type='text', required=true) }}
+        {{ field('email', type='email', required=true) }}
+        {{ field('password', value='', type='password') }}
+      </form>
+
+      {# --- Conditionals --- #}
+      {% if user.isAdmin %}
+        <p class="highlight">Welcome back, admin {{ user.name }}!</p>
+      {% elif user.isLoggedIn %}
+        <p>
+          Hello, {{ user.name }}. You have {{ user.messages | length }}
+          messages.
+        </p>
+      {% else %}
+        <p>Please <a href="/login">sign in</a>.</p>
+      {% endif %}
+
+      {# --- Loops with filters --- #}
+      <h2>Blog Posts ({{ posts | length }} total)</h2>
+      <ul>
+        {% for post in posts | sort(attribute='date') | reverse %}
+          <li>
+            <a href="{{ post.url }}">{{ post.title | title }}</a>
+            <span>{{ post.date }}</span>
+            <span>{{ post.tags | join(', ') }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+
+      {# --- Set variables and objects --- #}
+      {% set maxItems = 5 %}
+      {%
+        set config = {
+        theme: "dark",
+        columns: 3,
+        showDates: true
+        }
+      %}
+
+      {% set colors = ['red', 'green', 'blue', 'orange', 'purple'] %}
+
+      {# --- Whitespace control --- #}
+      <p>
+        Tags:
+        {%- for tag in tags -%}
+          {%- if not loop.first %},
+          {% endif -%}
+          {{ tag | lower }}
+        {%- endfor -%}
+      </p>
+
+      {# --- Iteration with destructuring --- #}
+      {% for fruit, color in fruits %}
+        <span style="color: {{ color }}">{{ fruit | capitalize }}</span>
+      {% endfor %}
+
+      {# --- Filters chained --- #}
+      <p>{{ description | striptags | truncate(200) | safe }}</p>
+      <p>{{ longText | replace("foo", "bar") | trim | upper }}</p>
+      <p>{{ items | reject("odd") | join(" - ") }}</p>
+      <p>{{ amount | round(2) | string }}</p>
+
+      {# --- Numbers and arithmetic --- #}
+      {% set total = 42 %}
+      {% set price = 19.99 %}
+      {% set discount = -5 %}
+      <p>Items: {{ total }}, Price: ${{ price }}, Savings: ${{ discount }}</p>
+
+      {# --- Block inheritance with super --- #}
+      {% block sidebar %}
+        {{ super() }}
+        <aside>
+          <h3>Extra sidebar content</h3>
+        </aside>
+      {% endblock %}
+
+      {# --- Import and include --- #}
+      {% import "macros.njk" as helpers %}
+      {% include "partials/footer.njk" %}
+
+      {# --- With block --- #}
+      {% with subtitle = "Featured Section" %}
+        <h2>{{ subtitle }}</h2>
+      {% endwith %}
+
+      {# --- Raw block (no processing) --- #}
+      {% raw %}
+        <p>
+          This shows literal {{ tags }} and {% blocks %} without processing.
+        </p>
+      {% endraw %}
+
+      {# --- Async iteration --- #}
+      <ul>
+        {% asyncAll item in asyncItems %}
+        <li>{{ item.id }}: {{ item.name | escape }}</li>
+        {% endall %}
+      </ul>
+
+      {# --- Complex nesting: objects in function calls --- #}
+      {{
+        govukButton({
+        text: "Submit form",
+        classes: "govuk-button--primary",
+        attributes: {
+        "data-module": "govuk-button"
+        }
+        })
+      }}
+
+      {# --- Groupby and dictsort filters --- #}
+      {% for type, items in products | groupby("category") %}
+        <h3>{{ type | title }}</h3>
+        <ul>
+          {% for item in items %}
+            <li>{{ item.name }} - ${{ item.price }}</li>
+          {% endfor %}
+        </ul>
+      {% endfor %}
+
+      {% for key, val in metadata | dictsort %}
+        <dt>{{ key }}</dt>
+        <dd>{{ val }}</dd>
+      {% endfor %}
+    </main>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+  const cards = document.querySelectorAll(".card");
+  cards.forEach((card, index) => {
+    card.style.animationDelay = `${index * 0.1}s`;
+    card.classList.add("fade-in");
+  });
+
+  async function loadPosts() {
+    const response = await fetch("/api/posts.json");
+    const data = await response.json();
+    return data.posts;
+  }
+
+  loadPosts().then(posts => {
+    console.log(`Loaded ${posts.length} posts`);
+  });
+});
+    </script>
+
+    {% block footer %}
+      <footer>
+        <p>
+          &copy; {{ "now" | date("Y") }} {{ site.name }}. Built with
+          <a href="https://www.11ty.dev">Eleventy</a>.
+        </p>
+      </footer>
+    {% endblock %}
+  </body>
+</html>

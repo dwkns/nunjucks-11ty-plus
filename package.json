@@ -1,49 +1,63 @@
 {
 	"name": "nunjucks-11ty-plus",
 	"displayName": "Nunjucks 11ty Plus",
-	"description": "Nunjucks for 11ty syntaz highlighting",
+	"description": "Nunjucks syntax highlighting and formatting for 11ty (Eleventy). Supports frontmatter (YAML, JSON, JS), script/style blocks, and HTML.",
 	"publisher": "dwkns",
 	"author": {
-    "name": "Darrell Wilkins",
-    "email": "dwkns@me.com"
-  },
-  "license": "MIT",
-  "galleryBanner": {
-    "color": "#1e415e",
-    "theme": "dark"
-  },
+		"name": "Darrell Wilkins",
+		"email": "dwkns@me.com"
+	},
+	"license": "MIT",
+	"galleryBanner": {
+		"color": "#1e415e",
+		"theme": "dark"
+	},
 	"icon": "images/nunjucks.png",
-	"version": "0.0.3",
+	"version": "0.0.5",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/dwkns/nunjucks-11ty-plus"
 	},
 	"bugs": {
-    "url": "https://github.com/dwkns/nunjucks-11ty-plus/issues"
-  },
+		"url": "https://github.com/dwkns/nunjucks-11ty-plus/issues"
+	},
+	"homepage": "https://github.com/dwkns/nunjucks-11ty-plus#readme",
 	"engines": {
 		"vscode": "^1.95.0"
 	},
+	"extensionKind": [
+		"ui",
+		"workspace"
+	],
 	"scripts": {
-		"build": "vsce package"
+		"build": "vsce package",
+		"test:grammar": "mocha --timeout 10000 test/test-grammar.js",
+		"test": "mocha --recursive --timeout 10000 test"
 	},
 	"categories": [
-    "Formatters",
+		"Formatters",
 		"Programming Languages",
-    "Snippets"
-  ],
+		"Themes"
+	],
 	"keywords": [
-        "nunjucks",
-        "njk",
-        "syntax",
-        "grammar",
-        "language",
-        "formatter",
-        "11ty",
-				"eleventy"
-    ],
+		"nunjucks",
+		"njk",
+		"syntax",
+		"grammar",
+		"language",
+		"formatter",
+		"11ty",
+		"eleventy"
+	],
 	"main": "./src/extension.js",
 	"contributes": {
+		"themes": [
+			{
+				"label": "Nunjucks Dark Modern",
+				"uiTheme": "vs-dark",
+				"path": "./themes/nunjucks-dark-modern-color-theme.json"
+			}
+		],
 		"languages": [
 			{
 				"id": "nunjucks",
@@ -76,9 +90,42 @@
 				"languageId": "nunjucks",
 				"autoInsert": true
 			}
-		]
+		],
+		"commands": [
+			{
+				"command": "nunjucks.showFormatterInfo",
+				"title": "Nunjucks: Show Formatter Info",
+				"category": "Nunjucks 11ty Plus"
+			}
+		],
+		"configuration": {
+			"title": "Nunjucks 11ty Plus",
+			"properties": {
+				"nunjucks.associateHtml": {
+					"type": "boolean",
+					"default": false,
+					"description": "Treat .html files as Nunjucks. When enabled, .html files open with Nunjucks syntax highlighting and formatting."
+				}
+			}
+		},
+		"configurationDefaults": {
+			"[nunjucks]": {
+				"editor.defaultFormatter": "dwkns.nunjucks-11ty-plus"
+			}
+		}
 	},
 	"dependencies": {
-		"prettier": "^3.3.3"
+		"@dprint/formatter": "^0.5.1",
+		"@dprint/json": "^0.18.0",
+		"@dprint/markdown": "^0.17.0",
+		"@dprint/typescript": "^0.91.0",
+		"dprint-plugin-markup": "^0.25.3",
+		"prettier": "^3.4.2"
+	},
+	"devDependencies": {
+		"chai": "^4.3.7",
+		"mocha": "^10.2.0",
+		"onigasm": "^2.2.5",
+		"vscode-textmate": "^6.0.0"
 	}
 }
