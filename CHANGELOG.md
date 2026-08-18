@@ -2,6 +2,16 @@
 
 All notable changes to **Nunjucks 11ty Plus** will be documented in this file.
 
+## [0.0.6] - 2026-08-18
+
+### Fixed
+- Format Document no longer splits Nunjucks whitespace-control markers (`{{-` / `-}}`) onto their own lines or inserts spaces (`{{ - name - }}`), which broke template rendering ([#2](https://github.com/dwkns/nunjucks-11ty-plus/issues/2)).
+- Re-formatting a file already broken by v0.0.5 reattaches those trim dashes.
+
+### Changed
+- Upgraded `dprint-plugin-markup` from 0.25.3 to 0.27.3 (includes markup_fmt’s Jinja interpolation trimming fix).
+- Upgraded Mocha to 11.8.0 so `npm test` runs on current Node.js.
+
 ## [0.0.5] - 2026-02-10
 
 ### Added

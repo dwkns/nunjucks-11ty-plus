@@ -1,6 +1,35 @@
 /**
  * Formatter helpers: frontmatter handling and style-block formatting.
  */
+
+/**
+ * Reattach Nunjucks interpolation trim dashes that were split away from `{{` / `}}`.
+ * Older markup_fmt versions turned `{{- name -}}` into `{{ - name - }}` or
+ *
+ *     {{
+ *       - name -
+ *     }}
+ *
+ * which is invalid Nunjucks (the `-` must be adjacent to the braces).
+ * Only interpolations with a dash at both ends are rewritten, so unary minus
+ * like `{{ -5 }}` is left unchanged.
+ */
+function repairSplitInterpolationTrim(content) {
+  return content.replace(/\{\{([\s\S]*?)\}\}/g, (full, inner) => {
+    const detached = /^(\s*)-([\s\S]*)-(\s*)$/.exec(inner);
+    if (!detached) return full;
+    const [, lead, body, trail] = detached;
+    if (lead.length === 0 && trail.length === 0) return full;
+
+    const expr = body.trim();
+    if (!expr.includes('\n')) {
+      return `{{- ${expr} -}}`;
+    }
+    const kept = body.replace(/^\s*\n/, '').replace(/\n[ \t]*$/, '');
+    return `{{-\n${kept}\n-}}`;
+  });
+}
+
 function formatContent(content, filename, runFn) {
   const fmMatch = content.match(/^(---(?:json|js)?\s*\n)([\s\S]*?)(\n---\s*$)/m);
   let formattedText = content;
@@ -17,7 +46,7 @@ function formatContent(content, filename, runFn) {
     }
   }
 
-  return runFn(formattedText, filename || 'file.njk');
+  return repairSplitInterpolationTrim(runFn(formattedText, filename || 'file.njk'));
 }
 
 /** Async version for async runFn (e.g. formatWithDprint). */
@@ -38,7 +67,7 @@ async function formatContentAsync(content, filename, runFn) {
   }
 
   const final = await runFn(formattedText, filename || 'file.njk');
-  return final;
+  return repairSplitInterpolationTrim(final);
 }
 
 function formatStyleBlocks(content, formatCssFn) {
@@ -74,4 +103,10 @@ async function formatStyleBlocksAsync(content, formatCssFn) {
   return parts.join('');
 }
 
-module.exports = { formatContent, formatContentAsync, formatStyleBlocks, formatStyleBlocksAsync };
+module.exports = {
+  formatContent,
+  formatContentAsync,
+  formatStyleBlocks,
+  formatStyleBlocksAsync,
+  repairSplitInterpolationTrim,
+};

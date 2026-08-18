@@ -13,7 +13,7 @@
 		"theme": "dark"
 	},
 	"icon": "images/nunjucks.png",
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/dwkns/nunjucks-11ty-plus"
@@ -119,12 +119,12 @@
 		"@dprint/json": "^0.18.0",
 		"@dprint/markdown": "^0.17.0",
 		"@dprint/typescript": "^0.91.0",
-		"dprint-plugin-markup": "^0.25.3",
+		"dprint-plugin-markup": "^0.27.3",
 		"prettier": "^3.4.2"
 	},
 	"devDependencies": {
 		"chai": "^4.3.7",
-		"mocha": "^10.2.0",
+		"mocha": "^11.8.0",
 		"onigasm": "^2.2.5",
 		"vscode-textmate": "^6.0.0"
 	}
